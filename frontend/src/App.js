@@ -10,7 +10,7 @@ import Courses from "./components/Courses";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardLayout from "./components/DashboardLayout";
-import StudentHome from "./components/StudentHome";
+import Questionnaire from "./components/avatar/Questionnaire";
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function App() {
           />
           <Route path="/student/signin" element={<StudentSignin />} />
           <Route path="/dashboard/*" element={<DashboardLayout />} />
+          <Route path="avatar-creation" element={<Questionnaire />} />
         </Routes>
       </Router>
     </div>

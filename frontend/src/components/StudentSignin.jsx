@@ -14,7 +14,11 @@ const Login = (props) => {
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
-      navigate("/dashboard/");
+      if (loggedInUser.avatar === undefined) {
+        navigate("/avatar-creation");
+      } else {
+        navigate("/dashboard/"); // Navigate to the dashboard
+      }
     }
   }, [navigate]);
 
@@ -64,7 +68,12 @@ const Login = (props) => {
       } else {
         const user = await response.json();
         localStorage.setItem("user", JSON.stringify(user));
-        navigate("/dashboard/"); // Navigate to the dashboard
+        console.log(user);
+        if (user.avatar === null) {
+          navigate("/avatar-creation");
+        } else {
+          navigate("/dashboard/"); // Navigate to the dashboard
+        }
       }
     } catch (error) {
       console.error(error.message);

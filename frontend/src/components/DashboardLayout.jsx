@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Sidebar from "./sidebar/Sidebar";
-import StudentHome from "./StudentHome";
+import StudentHome from "./student/StudentHome";
 
 const DashboardLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -22,6 +22,8 @@ const DashboardLayout = ({ children }) => {
 
   if (!user) {
     return <Navigate to="/student/signin" replace />;
+  } else if (!user.avatar) {
+    return <Navigate to="/avatar-creation" replace />;
   }
 
   return (
