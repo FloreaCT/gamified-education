@@ -49,6 +49,8 @@ const Avatar = ({ answers }) => {
           // Update localStorage
           user.avatar = generatedAvatar;
           localStorage.setItem("user", JSON.stringify(user));
+          console.log("I've updated the database");
+          console.log(JSON.stringify(localStorage.getItem("user")));
         } catch (error) {
           console.error("Failed to update avatar:", error);
         }
@@ -63,13 +65,13 @@ const Avatar = ({ answers }) => {
   }
 
   return (
-    <div className="flex flex-col align-center items-center ">
+    <div className="flex flex-col align-center items-center">
       <div>🎉 Ta-da! Behold your pixel-perfect alter ego! 🎉</div>
       <div>
         🛠️ Fear not, young adventurer! As you level up, you'll unlock magical
         scrolls to tweak or totally morph your avatar! 🛠️
       </div>
-      <img src={avatar} alt="Avatar" />
+      <img src={avatar} alt="Avatar" className="mb-2" />
 
       <button
         type="button"

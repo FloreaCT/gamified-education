@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Sidebar from "./sidebar/Sidebar";
 import StudentHome from "./student/StudentHome";
+import TopBar from "./student/TopBar";
+import { UserProvider } from "../utils/UserContext";
+import DiscoverPage from "./discovery/discoverPage";
 
 const DashboardLayout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -27,18 +30,22 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 ml-[20rem]">
-        <Routes>
-          <Route path="/" element={<StudentHome />} />
-          <Route path="/started" element={<StudentHome />} />
-          <Route path="/calendar" element={<StudentHome />} />
-          <Route path="/user" element={<StudentHome />} />
-          <Route path="/order" element={<StudentHome />} />
-        </Routes>
+    <UserProvider>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex-1 ml-[20rem]">
+          <TopBar />
+          <Routes>
+            <Route path="/" element={<StudentHome />} />
+            <Route path="/discover" element={<DiscoverPage />} />
+            <Route path="/started" element={<StudentHome />} />
+            <Route path="/calendar" element={<StudentHome />} />
+            <Route path="/user" element={<StudentHome />} />
+            <Route path="/order" element={<StudentHome />} />
+          </Routes>
+        </div>
       </div>
-    </div>
+    </UserProvider>
   );
 };
 

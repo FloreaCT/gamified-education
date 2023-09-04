@@ -12,7 +12,8 @@ const Login = (props) => {
 
   // Check if the user is already logged in
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
     if (loggedInUser) {
       if (loggedInUser.avatar === undefined) {
         navigate("/avatar-creation");
