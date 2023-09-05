@@ -5,6 +5,7 @@ import {
   FaArchive,
   FaBox,
   FaCalendar,
+  FaCodepen,
   FaHome,
   FaSignOutAlt,
   FaStar,
@@ -25,10 +26,10 @@ const sidebarNavItems = [
     section: "discover",
   },
   {
-    display: "Calendar",
-    icon: <FaCalendar />,
-    to: "/dashboard/calendar",
-    section: "calendar",
+    display: "Courses",
+    icon: <FaCodepen />,
+    to: "/dashboard/courses",
+    section: "courses",
   },
   {
     display: "Leaderboard",

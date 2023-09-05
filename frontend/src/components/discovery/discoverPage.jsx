@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./DiscoverPage.css";
+import { useUser } from "../../utils/UserContext";
 
 const DiscoverPage = () => {
   const [path, setPath] = useState(false);
@@ -49,6 +50,8 @@ const DiscoverPage = () => {
     "Turning it off and on again...",
   ];
 
+  const { user } = useUser();
+
   useEffect(() => {
     if (count === 6) setGameEnded(true);
   }, [count]);
@@ -71,6 +74,33 @@ const DiscoverPage = () => {
       clearInterval(timer); // Cleanup the interval
     };
   }, [isDetermining, lastMessageIndex]);
+
+  useEffect(() => {
+    if (selectedPath === "It's a tie!" || !selectedPath) {
+      return;
+    } else {
+      const updateUserPath = async () => {
+        try {
+          const response = await fetch("http://localhost:3001/api/updatePath", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: user.email,
+              path: selectedPath,
+            }),
+          });
+
+          if (response.ok) {
+            const updatedUser = await response.json();
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+          }
+        } catch (error) {
+          console.error("Failed to update the user:", error);
+        }
+      };
+      updateUserPath();
+    }
+  }, [selectedPath]);
 
   const handlePathClick = (path) => {
     setSelectedPath(path);
@@ -119,19 +149,27 @@ const DiscoverPage = () => {
       const { path1, path2, path3 } = points;
       if (path1 > path2 && path1 > path3) {
         setSelectedPath("The Path of Newby");
+        setIsDetermining(false);
+        return;
       }
       if (path2 > path1 && path2 > path3) {
         setSelectedPath("The Path of Adventure");
+        setIsDetermining(false);
+        return;
       }
       if (path3 > path1 && path3 > path2) {
         setSelectedPath("The path of Jedi Master");
+        setIsDetermining(false);
+        return;
       }
       if (path1 === path2 || path1 === path3 || path2 === path3) {
+        setIsDetermining(false);
         setSelectedPath("It's a tie!");
+        return;
       }
 
       setIsDetermining(false);
-    }, 7500);
+    }, 1);
 
     return;
   };
@@ -147,135 +185,146 @@ const DiscoverPage = () => {
   };
 
   return (
-    <div className="discovery-page">
-      {!gameStarted && !hideItems ? (
-        <div className="text-center p-8 bg-gray-800 rounded-lg shadow-lg mt-4">
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Welcome to Discovery of Your Path!
-          </h1>
-          <p className="text-white mb-6">
-            Instructions: Click "Start" to begin. You'll be presented with
-            questions under each path. Choose the one that resonates with you
-            the most to discover your best path!
-          </p>
-          <button
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
-            onClick={startGame}
-          >
-            Start
-          </button>
-        </div>
-      ) : !isDetermining && !hideItems ? (
-        <div className="grid grid-cols-3 gap-4 items-start mt-32">
-          <div
-            className="flex flex-col items-center "
-            onClick={() => handlePathClick(path[0])}
-          >
-            <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
-              <h2 className="text-center text-2xl">🌲 The Path of Newby 🌲</h2>
-              <p>Learn everything like baby steps!</p>
-              <p>Assuming you don't know anything</p>
-            </div>
-          </div>
-          <div
-            className="flex flex-col items-center"
-            onClick={() => handlePathClick(path[1])}
-          >
-            <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
-              <h2 className="text-cente text-2xl ">
-                🌳 The Path of Adventure 🌳
-              </h2>
-              <p>Embark on a thrilling journey!</p>
-              <p>Because you know what to pack!</p>
-            </div>
-          </div>
-          <div
-            className="flex flex-col items-center"
-            onClick={() => handlePathClick(path[2])}
-          >
-            <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
-              <h2 className="text-center text-2xl">
-                🌿 The Path of Jedi Master 🌿
-              </h2>
-              <p>Unlock the secrets of the universe!</p>
-              <p>Because you know how to use the "Force"!</p>
-            </div>
-          </div>
+    <div className="discovery-page inline-block">
+      {user.pathStarted ? (
+        <div className="bg-[#8B4513] rounded-lg text-white mt-10 m-4 p-4 text-center shadow-lg">
+          It seems that you are already on "{user.pathStarted}"" young one.
+          Please complete this path before moving to a new Adventure.
         </div>
       ) : (
-        <div></div>
-      )}
-      {question && count !== 6 && (
-        <div className="grid grid-cols-3 gap-4 items-center">
-          <div
-            className="flex flex-col items-center"
-            onClick={() => generateNewQuestions("newby")}
-          >
-            <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
-              🌲 {question[1]} 🌲
-            </h2>
-          </div>
-          <div
-            className="flex flex-col items-center"
-            onClick={() => generateNewQuestions("adventure")}
-          >
-            <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
-              🌳 {question[2]} 🌳
-            </h2>
-          </div>
-          <div
-            className="flex flex-col items-center"
-            onClick={() => generateNewQuestions("tranquility")}
-          >
-            <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
-              🌿 {question[3]} 🌿
-            </h2>
-          </div>
-        </div>
-      )}
-      {count === 6 && gameEnded && !isDetermining && !hideItems && (
-        <div className="inline-block p-2">
-          <div className="questions" onClick={() => determineBestPath()}>
-            See which path is best for you
-          </div>
-        </div>
-      )}
-      {selectedPath && (
-        <div className="text-center p-4 rounded-lg bg-teal-500 text-white text-2xl font-bold mt-4 inline-block">
-          <div>
-            {selectedPath === "It's a tie!" ? (
-              <div className="p-2">
-                <div>It's a tie!</div>
-                <button
-                  type="button"
-                  className="bg-red-400 p-2 mt-2 rounded-lg"
-                  onClick={() => resetGame()}
-                >
-                  {" "}
-                  Reset{" "}
-                </button>
+        <>
+          {!gameStarted && !hideItems ? (
+            <div className="text-center p-8 bg-gray-800 rounded-lg shadow-lg mt-4">
+              <h1 className="text-3xl font-bold text-white mb-4">
+                Welcome to Discovery of Your Path!
+              </h1>
+              <p className="text-white mb-6">
+                Instructions: Click "Start" to begin. You'll be presented with
+                questions under each path. Choose the one that resonates with
+                you the most to discover your best path!
+              </p>
+              <button
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+                onClick={startGame}
+              >
+                Start
+              </button>
+            </div>
+          ) : !isDetermining && !hideItems ? (
+            <div className="grid grid-cols-3 gap-4 items-start mt-32">
+              <div
+                className="flex flex-col items-center "
+                onClick={() => handlePathClick(path[0])}
+              >
+                <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
+                  <h2 className="text-center text-2xl">
+                    🌲 The Path of Newby 🌲
+                  </h2>
+                  <p>Learn everything like baby steps!</p>
+                  <p>Assuming you don't know anything</p>
+                </div>
               </div>
-            ) : (
+              <div
+                className="flex flex-col items-center"
+                onClick={() => handlePathClick(path[1])}
+              >
+                <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
+                  <h2 className="text-cente text-2xl ">
+                    🌳 The Path of Adventure 🌳
+                  </h2>
+                  <p>Embark on a thrilling journey!</p>
+                  <p>Because you know what to pack!</p>
+                </div>
+              </div>
+              <div
+                className="flex flex-col items-center"
+                onClick={() => handlePathClick(path[2])}
+              >
+                <div className="bg-[#8B4513] rounded-lg text-white m-4 p-4 text-center shadow-lg">
+                  <h2 className="text-center text-2xl">
+                    🌿 The Path of Jedi Master 🌿
+                  </h2>
+                  <p>Unlock the secrets of the universe!</p>
+                  <p>Because you know how to use the "Force"!</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
+          {question && count !== 6 && (
+            <div className="grid grid-cols-3 gap-4 items-center">
+              <div
+                className="flex flex-col items-center"
+                onClick={() => generateNewQuestions("newby")}
+              >
+                <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
+                  🌲 {question[1]} 🌲
+                </h2>
+              </div>
+              <div
+                className="flex flex-col items-center"
+                onClick={() => generateNewQuestions("adventure")}
+              >
+                <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
+                  🌳 {question[2]} 🌳
+                </h2>
+              </div>
+              <div
+                className="flex flex-col items-center"
+                onClick={() => generateNewQuestions("tranquility")}
+              >
+                <h2 className="text-center text-white bg-green-700 p-2 rounded-2xl hover:cursor-pointer">
+                  🌿 {question[3]} 🌿
+                </h2>
+              </div>
+            </div>
+          )}
+          {count === 6 && gameEnded && !isDetermining && !hideItems && (
+            <div className="inline-block p-2">
+              <div className="questions" onClick={() => determineBestPath()}>
+                See which path is best for you
+              </div>
+            </div>
+          )}
+          {selectedPath && (
+            <div className="text-center p-4 rounded-lg bg-teal-500 text-white text-2xl font-bold mt-4 inline-block">
               <div>
-                🎉 Congratulations! 🎉 <br />
-                You're path has been chosen{" "}
-                <span className="underline">
-                  <br />
-                  {selectedPath}
-                </span>{" "}
-                🚀
+                {selectedPath === "It's a tie!" ? (
+                  <div className="p-2">
+                    <div>It's a tie!</div>
+                    <button
+                      type="button"
+                      className="bg-red-400 p-2 mt-2 rounded-lg"
+                      onClick={() => resetGame()}
+                    >
+                      {" "}
+                      Reset{" "}
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    🎉 Congratulations! 🎉 <br />
+                    You're path has been chosen{" "}
+                    <span className="underline">
+                      <br />
+                      {selectedPath}
+                    </span>{" "}
+                    🚀
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-      )}
-      {isDetermining ? (
-        <div className="text-center p-4 rounded-lg mt-6 bg-yellow-300 text-black text-xl font-bold inline-block">
-          <div className="animate-spin">🤔</div>
-          {funnyMessages[currentMessageIndex]}
-        </div>
-      ) : (
-        <div></div>
+            </div>
+          )}
+          {isDetermining ? (
+            <div className="text-center p-4 rounded-lg mt-6 bg-yellow-300 text-black text-xl font-bold inline-block">
+              <div className="animate-spin">🤔</div>
+              {funnyMessages[currentMessageIndex]}
+            </div>
+          ) : (
+            <div></div>
+          )}
+        </>
       )}
     </div>
   );

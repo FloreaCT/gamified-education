@@ -49,8 +49,6 @@ const Avatar = ({ answers }) => {
           // Update localStorage
           user.avatar = generatedAvatar;
           localStorage.setItem("user", JSON.stringify(user));
-          console.log("I've updated the database");
-          console.log(JSON.stringify(localStorage.getItem("user")));
         } catch (error) {
           console.error("Failed to update avatar:", error);
         }

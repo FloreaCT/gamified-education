@@ -11,30 +11,33 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Fragment } from "react";
 import DashboardLayout from "./components/DashboardLayout";
 import Questionnaire from "./components/avatar/Questionnaire";
+import { UserProvider } from "./utils/UserContext";
 
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Fragment>
-                <Nav />
-                <Hero />
-                <Features />
-                <Categories />
-                <Courses />
-                <Footer />
-              </Fragment>
-            }
-          />
-          <Route path="/student/signin" element={<StudentSignin />} />
-          <Route path="/dashboard/*" element={<DashboardLayout />} />
-          <Route path="avatar-creation" element={<Questionnaire />} />
-        </Routes>
-      </Router>
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Fragment>
+                  <Nav />
+                  <Hero />
+                  <Features />
+                  <Categories />
+                  <Courses />
+                  <Footer />
+                </Fragment>
+              }
+            />
+            <Route path="/student/signin" element={<StudentSignin />} />
+            <Route path="/dashboard/*" element={<DashboardLayout />} />
+            <Route path="avatar-creation" element={<Questionnaire />} />
+          </Routes>
+        </Router>
+      </UserProvider>
     </div>
   );
 }

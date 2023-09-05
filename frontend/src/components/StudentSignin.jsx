@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext, useUser } from "../utils/UserContext";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -9,19 +10,20 @@ const Login = (props) => {
   const [passwordError, setPasswordError] = useState("");
 
   const navigate = useNavigate();
+  const { user, updateUser } = useUser();
 
   // Check if the user is already logged in
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("user"));
-
-    if (loggedInUser) {
-      if (loggedInUser.avatar === undefined) {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser !== "undefined" && loggedInUser !== null) {
+      const foundUser = JSON.parse(loggedInUser);
+      if (foundUser.avatar === undefined) {
         navigate("/avatar-creation");
       } else {
         navigate("/dashboard/"); // Navigate to the dashboard
       }
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
   const onButtonClick = async () => {
     // Set initial error values to empty
@@ -69,7 +71,7 @@ const Login = (props) => {
       } else {
         const user = await response.json();
         localStorage.setItem("user", JSON.stringify(user));
-        console.log(user);
+
         if (user.avatar === null) {
           navigate("/avatar-creation");
         } else {

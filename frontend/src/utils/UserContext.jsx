@@ -10,6 +10,8 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
+    if (!loggedInUser) {
+    }
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
       setUser(foundUser);

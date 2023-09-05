@@ -3,26 +3,27 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Sidebar from "./sidebar/Sidebar";
 import StudentHome from "./student/StudentHome";
 import TopBar from "./student/TopBar";
-import { UserProvider } from "../utils/UserContext";
+import { useUser } from "../utils/UserContext";
 import DiscoverPage from "./discovery/discoverPage";
+import Leaderboard from "./leaderboard/Leaderboard";
+import Courses from "./courses/Courses";
 
 const DashboardLayout = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user, updateUser } = useUser(); // Use your custom hook
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
-      setUser(foundUser);
+      updateUser(foundUser); // Update the user in your context
     }
-    setIsLoading(false); // Set loading to false after checking for user
+    setIsLoading(false);
   }, []);
 
   if (isLoading) {
     return <div>Loading...</div>; // Show a loading spinner or some placeholder
   }
-
   if (!user) {
     return <Navigate to="/student/signin" replace />;
   } else if (!user.avatar) {
@@ -30,22 +31,21 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <UserProvider>
-      <div className="flex">
-        <Sidebar />
-        <div className="flex-1 ml-[20rem]">
-          <TopBar />
-          <Routes>
-            <Route path="/" element={<StudentHome />} />
-            <Route path="/discover" element={<DiscoverPage />} />
-            <Route path="/started" element={<StudentHome />} />
-            <Route path="/calendar" element={<StudentHome />} />
-            <Route path="/user" element={<StudentHome />} />
-            <Route path="/order" element={<StudentHome />} />
-          </Routes>
-        </div>
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1 ml-[20rem]">
+        <TopBar />
+        <Routes>
+          <Route path="/" element={<StudentHome />} />
+          <Route path="/discover" element={<DiscoverPage />} />
+          <Route path="/started" element={<StudentHome />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/user" element={<StudentHome />} />
+          <Route path="/order" element={<StudentHome />} />
+        </Routes>
       </div>
-    </UserProvider>
+    </div>
   );
 };
 
