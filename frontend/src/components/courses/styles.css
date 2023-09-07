@@ -1,0 +1,21 @@
+.course-card {
+    transition: transform .2s ease-in-out;
+  }
+  
+  .course-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .progress-bar {
+    height: 10px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background-color: teal;
+    border-radius: 4px;
+  }
+  

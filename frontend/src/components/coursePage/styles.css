@@ -1,0 +1,175 @@
+.course-map {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 3rem;
+  }
+  
+  .checkpoint {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: not-allowed;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .checkpoint.active {
+    background: green;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+  }
+  
+  .checkpoint-line {
+    position: absolute;
+    height: 2px;
+    background: grey;
+    top: 50%;
+    left: 0;
+    right: 0;
+    z-index: 0;
+  }
+  
+  /* Animation */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+    }
+  }
+  
+
+  .tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: black;
+    color: white;
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .checkpoint:hover .tooltip {
+    opacity: 1;
+  }
+  
+  .course-material, .quiz-section {
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .course-material h2, .quiz-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .interactive-quiz {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    display: inline-block;
+  }
+
+  .quiz-option {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 1rem;
+
+  }
+  
+  .quiz-option.selected {
+    background-color: #f0f0f0;
+  }
+  
+  .quiz-option.correct {
+    background-color: #d4edda;
+  }
+  
+  .quiz-option.wrong {
+    background-color: #f8d7da;
+  }
+
+  .message {
+    position: absolute;
+    top: 140%; /* Position it at the bottom of the textarea */
+    left: 0;
+    color: white;
+    padding: 16px;
+    width: 100%;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+
+  }
+    
+  .message.visible {
+    opacity: 1;
+  }
+  
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fireworks {
+    0% {
+      background: red;
+    }
+    25% {
+      background: yellow;
+    }
+    50% {
+      background: blue;
+    }
+    75% {
+      background: green;
+    }
+    100% {
+      background: red;
+    }
+  }
+  
+  .fireworks {
+    animation: fireworks 1s infinite;
+  }
+  
+  .pop-in {
+    animation: pop-in 0.5s ease-out;
+  }
+  
+  .congrats-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  

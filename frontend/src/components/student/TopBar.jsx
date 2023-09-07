@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { UserContext } from "../../utils/UserContext"; // Import the UserContext
+import React, { useEffect, useState } from "react";
+import { useUser } from "../../utils/UserContext"; // Import the UserContext
 
 const TopBar = () => {
   const [shouldBlink, setShouldBlink] = useState(false);
@@ -8,11 +8,10 @@ const TopBar = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [oldEmail, setOldEmail] = useState("");
 
-  const { user, updateUser } = useContext(UserContext); // Use the context
+  const { user, updateUser } = useUser(); // Destructure the user state variable
 
-  const expPercentage = user ? user.experience : null;
   const avatar = user ? user.avatar : null;
-  const level = user ? user.level : 2;
+  const level = user ? user.level : 0;
 
   useEffect(() => {
     setShouldBlink(true);
@@ -94,10 +93,10 @@ const TopBar = () => {
         <div className="relative w-24 h-3 bg-gray-300 rounded-full">
           <div
             className="absolute left-0 h-3 bg-yellow-500 rounded-full"
-            style={{ width: `${expPercentage}%` }}
+            style={{ width: `${user?.experience}%` }}
           ></div>
         </div>
-        Level {level}
+        Level {user?.level}
       </div>
 
       {/* Center: Small Feed Container */}

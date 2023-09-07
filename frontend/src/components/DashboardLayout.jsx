@@ -7,6 +7,7 @@ import { useUser } from "../utils/UserContext";
 import DiscoverPage from "./discovery/discoverPage";
 import Leaderboard from "./leaderboard/Leaderboard";
 import Courses from "./courses/Courses";
+import CoursePage from "./coursePage/CoursePage";
 
 const DashboardLayout = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +41,7 @@ const DashboardLayout = ({ children }) => {
           <Route path="/discover" element={<DiscoverPage />} />
           <Route path="/started" element={<StudentHome />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/coursePage" element={<CoursePage />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/user" element={<StudentHome />} />
           <Route path="/order" element={<StudentHome />} />

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./DiscoverPage.css";
 import { useUser } from "../../utils/UserContext";
+import { Link } from "react-router-dom";
 
 const DiscoverPage = () => {
   const [path, setPath] = useState(false);
@@ -169,7 +170,7 @@ const DiscoverPage = () => {
       }
 
       setIsDetermining(false);
-    }, 1);
+    }, 7500);
 
     return;
   };
@@ -308,7 +309,7 @@ const DiscoverPage = () => {
                     You're path has been chosen{" "}
                     <span className="underline">
                       <br />
-                      {selectedPath}
+                      <Link to="/dashboard/courses/">{selectedPath}</Link>
                     </span>{" "}
                     🚀
                   </div>

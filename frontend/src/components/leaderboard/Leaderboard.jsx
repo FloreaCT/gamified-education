@@ -63,9 +63,7 @@ const Leaderboard = () => {
             },
           }
         );
-        const sortedData = [...response.data].sort(
-          (a, b) => b.experience - a.experience
-        );
+        const sortedData = [...response.data].sort((a, b) => b.level - a.level);
         const rankedData = sortedData.map((user, index) => ({
           ...user,
           rank: index + 1,
@@ -90,18 +88,6 @@ const Leaderboard = () => {
       <h1 className="text-4xl font-bold mb-4">Leaderboard</h1>
       <div className="flex flex-col text-center items-center ">
         <div className="mb-4">
-          <button
-            className="mr-4 bg-teal-500 text-white px-4 py-2 rounded"
-            onClick={() => setSortOption("level")}
-          >
-            Sort by Level
-          </button>
-          <button
-            className="mr-4 bg-teal-500 text-white px-4 py-2 rounded"
-            onClick={() => setSortOption("experience")}
-          >
-            Sort by XP
-          </button>
           <button
             className="mr-4 bg-teal-500 text-white px-4 py-2 rounded"
             onClick={() => setTimeframe("weekly")}

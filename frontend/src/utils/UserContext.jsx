@@ -10,23 +10,27 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
-    if (!loggedInUser) {
-    }
+
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
+
       setUser(foundUser);
-      // Get the user's course history
-      const url = `http://localhost:3001/api/usercoursehistory/${foundUser.id}`;
+
+      const url = new URL("http://localhost:3001/api/usercoursehistory");
+      url.searchParams.append("userId", "1");
+
       fetch(url)
         .then((res) => {
           if (res.status === 500) {
             return null;
           } else {
-            res.json();
+            return res.json(); // Parse the JSON response
           }
         })
         .then((data) => {
-          setHistory(data);
+          if (data) {
+            setHistory(data);
+          }
         })
         .catch((err) => console.log(err));
     }
