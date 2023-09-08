@@ -11,7 +11,6 @@ const Leaderboard = () => {
   const [currentUser, setCurrentUser] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalUsers, setTotalUsers] = useState(0);
   const [filteredLeaderboardData, setFilteredLeaderboardData] = useState([]);
   const itemsPerPage = 10;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -90,13 +89,13 @@ const Leaderboard = () => {
         <div className="mb-4">
           <button
             className="mr-4 bg-teal-500 text-white px-4 py-2 rounded"
-            onClick={() => setTimeframe("weekly")}
+            onClick={() => setSortOption("weeklyXP")}
           >
             Weekly
           </button>
           <button
             className="bg-teal-500 text-white px-4 py-2 rounded"
-            onClick={() => setTimeframe("monthly")}
+            onClick={() => setSortOption("monthlyXP")}
           >
             Monthly
           </button>
@@ -135,7 +134,19 @@ const Leaderboard = () => {
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hover:cursor-pointer"
                       onClick={() => setSortOption("experience")}
                     >
-                      XP
+                      Total XP
+                    </th>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hover:cursor-pointer"
+                      onClick={() => setSortOption("weeklyXP")}
+                    >
+                      Weekly XP
+                    </th>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hover:cursor-pointer"
+                      onClick={() => setSortOption("monthlyXP")}
+                    >
+                      Monthly XP
                     </th>
                   </tr>
                 </thead>
@@ -170,6 +181,8 @@ const Leaderboard = () => {
                       <td>{user.username}</td>
                       <td>{user.level}</td>
                       <td>{user.experience}</td>
+                      <td>{user.weeklyXP}</td>
+                      <td>{user.monthlyXP}</td>
                     </tr>
                   ))}
                 </tbody>

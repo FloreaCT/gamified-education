@@ -3,10 +3,10 @@ import { useUser } from "../../utils/UserContext";
 import "./styles.css";
 import { FaHtml5, FaJava, FaPhp } from "react-icons/fa";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Courses = () => {
-  const [currentUser, setCurrentUser] = useState({});
+  // const [currentUser, setCurrentUser] = useState({});
   const [courses, setCourses] = useState([]);
   const { user } = useUser();
   const [icons, setIcons] = useState({
@@ -26,7 +26,6 @@ const Courses = () => {
           },
         });
         const data = response.data;
-
         if (data) {
           setCourses(data);
         }
@@ -38,25 +37,52 @@ const Courses = () => {
     fetchUserCourses();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setCurrentUser(user);
+  //   }
+  // }, [user]);
 
-  const handleContinueClick = (courseName) => {
-    navigate("/dashboard/courses/coursePage", {
-      state: { courseName: courseName },
-    });
+  const handleContinueClick = (courseName, reset) => {
+    if (reset) {
+      const reset = "reset";
+      navigate("/dashboard/courses/coursePage", {
+        state: { courseName: courseName, reset: reset },
+      });
+    } else {
+      navigate("/dashboard/courses/coursePage", {
+        state: { courseName: courseName },
+      });
+    }
   };
 
   return (
     <div className="container mx-auto p-6">
-      {currentUser.pathStarted && (
+      {user.pathStarted ? (
         <div className="text-2xl font-bold mb-4">
           Since you're on{" "}
-          <span className="text-teal-500">{currentUser.pathStarted}</span>, the
+          <span className="text-teal-500">{user.pathStarted}</span>, the
           following courses are available to you:
+        </div>
+      ) : (
+        <div className="text-2xl font-bold mb-4 bg">
+          <div className="inline-block bg-teal-500 p-2 rounded-lg text-white">
+            <h1>👋 Hey Adventurer!</h1>
+            <p>Looks like you haven't chosen a path yet. No worries!</p>
+            <h2>🤔 Confused about where to start?</h2>
+            <p>Let our magical algorithm decide the best path for you!</p>
+          </div>
+          <div className="flex justify-center">
+            <Link to="/dashboard/discover">
+              <button className="bg-teal-500 text-white m-2 px-4 py-2 rounded-2xl hover:bg-teal-600">
+                🧙‍♂️ Show Me My Path!
+              </button>
+            </Link>
+          </div>
+          <h2>OR</h2>
+          <p>
+            Feel free to choose from the treasure trove of courses below! 📚
+          </p>
         </div>
       )}
 
@@ -86,14 +112,16 @@ const Courses = () => {
                 style={{
                   width: `${
                     course["UserCourseHistories.current_level"] === null
-                      ? "0%"
+                      ? "0"
                       : course["UserCourseHistories.current_level"] ===
                         undefined
-                      ? "0%"
+                      ? "0"
                       : `${
                           course["UserCourseHistories.current_level"] - 1 === 0
                             ? 0
-                            : course["UserCourseHistories.current_level"] * 10
+                            : (course["UserCourseHistories.current_level"] -
+                                1) *
+                              10
                         }%`
                   }`,
                 }}
@@ -109,7 +137,12 @@ const Courses = () => {
             ) : (
               <div>
                 <p>You finished this course!</p>
-                <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  onClick={() =>
+                    handleContinueClick(course.course_name, "reset")
+                  }
+                >
                   Restart Course
                 </button>
               </div>

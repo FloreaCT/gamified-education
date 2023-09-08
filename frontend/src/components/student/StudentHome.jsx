@@ -1,13 +1,13 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../../utils/UserContext";
+import { useUser } from "../../utils/UserContext";
 
 const StudentHome = () => {
   const [currentUser, setCurrentUser] = useState("");
   const [userHistory, setUserHistory] = useState(null);
   const [recentCourse, setRecentCourse] = useState(null);
   const [achievements, setAchievements] = useState([]);
-  const { user, history } = useContext(UserContext);
+  const { user, history } = useUser();
 
   const navigate = useNavigate();
 
@@ -31,7 +31,12 @@ const StudentHome = () => {
       const sortedHistory = history.sort(
         (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
       );
-      setRecentCourse(sortedHistory[0]);
+
+      const recentUncompletedCourse = sortedHistory.find(
+        (course) => !course.completion_status
+      );
+
+      setRecentCourse(recentUncompletedCourse);
       setUserHistory(history);
     }
   }, [user, history]);
@@ -64,16 +69,17 @@ const StudentHome = () => {
           </div>
         )}
         {/* Continue Course Section */}
-        {userHistory ? (
+        {userHistory !== null && recentCourse ? (
           <div className="bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 p-6 rounded-lg mb-4 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-white text-3xl font-semibold">
-                  Continue Your Journey
+                  Continue Your Journey{" "}
+                  {console.log("recent course", recentCourse)}
                 </h2>
                 <p className="text-white text-lg mt-2">
                   Pick up right where you left off in{" "}
-                  <span className="font-bold">{recentCourse.course_id}</span>.
+                  <span className="font-bold">{recentCourse?.course_id}</span>.
                 </p>
               </div>
               <div className="bg-white p-4 rounded-full">
@@ -116,21 +122,29 @@ const StudentHome = () => {
         )}
 
         {/* User History Section */}
-        {userHistory ? (
+        {userHistory !== null ? (
           <div className="bg-yellow-100 p-4 rounded-lg mb-4">
             <div className="text-2xl font-semibold">Your History</div>
-            {/* Get from the usercoursehistory where current user id = user_id and get */}
+            {/* Get from the UserCourseHistories where current user id = user_id and get */}
             {userHistory.map((data, index) => {
-              const isoTimeString = data.started_time.toString();
+              const isoTimeString = data?.started_time?.toString(); // Started time
+              const isoTimeStringFinish = data?.finished_time?.toString(); // Finished time
+
               const isoDate = new Date(isoTimeString);
 
               const formattedDate = isoDate.toLocaleDateString(); // Format: 9/5/2023
               const formattedTime = isoDate.toLocaleTimeString(); // Format: 10:40:40 AM
 
+              const finishedDate = new Date(isoTimeStringFinish);
+              const formattedFinishDate = finishedDate.toLocaleDateString();
               return (
                 <div key={index} className="bg-white p-2 rounded-lg mt-2">
                   <div className="font-bold">Course: {data.course_id}</div>
-                  <div>Level: {data.current_level}</div>
+                  <div>
+                    {data.current_level === 11
+                      ? `Finished on :  ${formattedFinishDate}`
+                      : `Level: ${data.current_level}`}
+                  </div>
 
                   <div>
                     Date started: {formattedDate} at {formattedTime}

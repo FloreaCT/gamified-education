@@ -11,7 +11,6 @@ const TopBar = () => {
   const { user, updateUser } = useUser(); // Destructure the user state variable
 
   const avatar = user ? user.avatar : null;
-  const level = user ? user.level : 0;
 
   useEffect(() => {
     setShouldBlink(true);

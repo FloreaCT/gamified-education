@@ -22,7 +22,7 @@ const CoursePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, updateUser } = useUser();
+  const { user, updateUser, updateHistory } = useUser();
   const Checkpoints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const messageStyles = useSpring({
@@ -31,6 +31,7 @@ const CoursePage = () => {
   });
 
   let courseName = location.state ? location.state.courseName : null;
+  let reset = location.state ? location.state.reset : null;
 
   useEffect(() => {
     if (finished) {
@@ -74,34 +75,35 @@ const CoursePage = () => {
         `http://localhost:3001/api/courses/${courseName}`
       );
       if (!response.ok) {
-        console.log("Something went wrong");
+        console.log("Could not get materials");
         return;
       }
       const data = await response.json();
-      console.log("New java course", data);
       const materials = JSON.parse(data.course_material);
       const quizzes = JSON.parse(data.course_quizzes);
-
-      setCompletionStatus(data.completion_status);
       setCourseMaterial(materials);
       setQuizzes(quizzes);
     };
 
     const fetchProgress = async () => {
       const response = await fetch(
-        `http://localhost:3001/api/courses/${courseName}/${user.id})}`
+        `http://localhost:3001/api/courses/${courseName}/${user.id}`
       );
+
       if (!response.ok) {
-        console.log("Something went wrong");
+        console.log("Could not get the progress");
         return;
       }
-      const data = await response.json();
 
+      const data = await response.json();
+      setCompletionStatus(data.completion_status);
       setCurrentLevel(data.current_level);
     };
 
     fetchedCourseMaterial();
     fetchProgress();
+
+    if (reset) restartCourse();
   }, []);
 
   const checkAnswer = () => {
@@ -146,6 +148,9 @@ const CoursePage = () => {
   };
 
   const updateExperience = async () => {
+    if (completionStatus) {
+      return;
+    }
     try {
       const response = await fetch(
         `http://localhost:3001/api/user/updateExperience`,
@@ -177,9 +182,40 @@ const CoursePage = () => {
   const handleNext = async () => {
     // Disable the button immediately to prevent multiple clicks
     setDisableNext(true);
+
     if (currentLevel === Checkpoints.length) {
       setFinished(true);
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/courses/updateStatus`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: user.id,
+              courseName: courseName,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          console.log("Something went wrong");
+          setDisableNext(false); // Enable the button again
+          return;
+        }
+        const history = await response.json();
+        history.current_level = history.current_level + 1;
+
+        // Set user history in UserContext
+        updateHistory(history);
+      } catch (error) {
+        console.log("An error occurred:", error);
+        setDisableNext(false); // Enable the button again
+      }
     }
+
     // Calculate the new level
     const newLevel = currentLevel + 1;
 
@@ -193,7 +229,7 @@ const CoursePage = () => {
           },
           body: JSON.stringify({
             user_id: user.id,
-            currentLevel: newLevel, // Use the new level directly
+            currentLevel: newLevel,
             courseName: courseName,
           }),
         }
@@ -209,6 +245,9 @@ const CoursePage = () => {
 
       // Update user experience
       const experience = await response.json();
+
+      // Update userContext history
+      updateHistory(experience, experience.course_id);
 
       if (!completionStatus && experience.message !== 0) {
         updateExperience();
@@ -246,6 +285,7 @@ const CoursePage = () => {
       return;
     }
     setShowCongrats(false);
+    setFinished(false);
     setCurrentLevel(1);
   };
 

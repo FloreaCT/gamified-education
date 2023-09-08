@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./DiscoverPage.css";
 import { useUser } from "../../utils/UserContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DiscoverPage = () => {
   const [path, setPath] = useState(false);
@@ -15,6 +15,7 @@ const DiscoverPage = () => {
   const [hideItems, setHideItems] = useState(false);
   const [lastMessageIndex, setLastMessageIndex] = useState(0);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [redirect, setRedirect] = useState(false);
   const [initialQuestions, setInitialQuestions] = useState([
     [
       "The questions on the right are to hard, i'll click this one",
@@ -51,8 +52,8 @@ const DiscoverPage = () => {
     "Turning it off and on again...",
   ];
 
-  const { user } = useUser();
-
+  const { user, updateUser } = useUser();
+  const navigate = useNavigate();
   useEffect(() => {
     if (count === 6) setGameEnded(true);
   }, [count]);
@@ -92,8 +93,13 @@ const DiscoverPage = () => {
           });
 
           if (response.ok) {
-            const updatedUser = await response.json();
-            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setRedirect(true);
+            setTimeout(async () => {
+              const updatedUser = await response.json();
+              localStorage.setItem("user", JSON.stringify(updatedUser));
+              updateUser({ pathStarted: selectedPath }); // Update the user state in the context
+              navigate("/dashboard/courses");
+            }, 3000);
           }
         } catch (error) {
           console.error("Failed to update the user:", error);
@@ -168,7 +174,6 @@ const DiscoverPage = () => {
         setSelectedPath("It's a tie!");
         return;
       }
-
       setIsDetermining(false);
     }, 7500);
 
@@ -305,13 +310,18 @@ const DiscoverPage = () => {
                   </div>
                 ) : (
                   <div>
-                    🎉 Congratulations! 🎉 <br />
-                    You're path has been chosen{" "}
-                    <span className="underline">
-                      <br />
-                      <Link to="/dashboard/courses/">{selectedPath}</Link>
-                    </span>{" "}
-                    🚀
+                    <div>
+                      🎉 Congratulations! 🎉 <br />
+                      You're path has been chosen{" "}
+                      <span className="underline">
+                        <br />
+                        <Link to="/dashboard/courses/">{selectedPath}</Link>
+                      </span>{" "}
+                      🚀
+                    </div>
+                    <h1 className="mt-4">
+                      You will now be redirected to our Courses page!
+                    </h1>
                   </div>
                 )}
               </div>

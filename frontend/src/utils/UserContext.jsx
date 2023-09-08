@@ -16,8 +16,8 @@ export const UserProvider = ({ children }) => {
 
       setUser(foundUser);
 
-      const url = new URL("http://localhost:3001/api/usercoursehistory");
-      url.searchParams.append("userId", "1");
+      const url = new URL("http://localhost:3001/api/UserCourseHistories");
+      url.searchParams.append("userId", JSON.parse(loggedInUser).id);
 
       fetch(url)
         .then((res) => {
@@ -36,12 +36,39 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
+  const updateHistory = (newCourseHistory, courseName) => {
+    if (!history || history.length === 0) {
+      // If history is empty, simply set it to an array containing the new course history
+      setHistory([newCourseHistory]);
+      return;
+    }
+
+    const existingCourse = history.find(
+      (course) => course.course_id === courseName
+    );
+
+    if (existingCourse) {
+      // Update the existing course history
+      const updatedHistory = history.map((course) => {
+        if (course.course_id === courseName) {
+          return newCourseHistory;
+        }
+        return course;
+      });
+
+      setHistory(updatedHistory);
+    } else {
+      // Add the new course history to the existing history
+      setHistory([...history, newCourseHistory]);
+    }
+  };
+
   const updateUser = (updatedFields) => {
     setUser((prevUser) => ({ ...prevUser, ...updatedFields }));
   };
 
   return (
-    <UserContext.Provider value={{ user, history, updateUser }}>
+    <UserContext.Provider value={{ user, history, updateHistory, updateUser }}>
       {children}
     </UserContext.Provider>
   );
