@@ -8,6 +8,8 @@ import DiscoverPage from "./discovery/discoverPage";
 import Leaderboard from "./leaderboard/Leaderboard";
 import Courses from "./courses/Courses";
 import CoursePage from "./coursePage/CoursePage";
+import Achievements from "./achivements/Achievements";
+import Feed from "./feed/Feed";
 
 const DashboardLayout = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,12 +41,12 @@ const DashboardLayout = ({ children }) => {
         <Routes>
           <Route path="/" element={<StudentHome />} />
           <Route path="/discover" element={<DiscoverPage />} />
-          <Route path="/started" element={<StudentHome />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/coursePage" element={<CoursePage />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/user" element={<StudentHome />} />
-          <Route path="/order" element={<StudentHome />} />
+          <Route path="/Achievements" element={<Achievements />} />
         </Routes>
       </div>
     </div>

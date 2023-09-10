@@ -9,7 +9,7 @@ const TopBar = () => {
   const [oldEmail, setOldEmail] = useState("");
 
   const { user, updateUser } = useUser(); // Destructure the user state variable
-
+  const experience = user ? user.experience : null;
   const avatar = user ? user.avatar : null;
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const TopBar = () => {
     const timer = setTimeout(() => {
       setShouldBlink(false);
     }, 5500);
-
+    console.log(user);
     return () => clearTimeout(timer);
   }, []);
 
@@ -84,6 +84,10 @@ const TopBar = () => {
     }
   };
 
+  const calculateLevel = (xp) => {
+    return Math.min((xp / 100) * 100, 100);
+  };
+
   return (
     <div className="flex justify-between items-center bg-teal-500 text-white p-4 ">
       {/* Left Side: Experience Bar */}
@@ -92,7 +96,7 @@ const TopBar = () => {
         <div className="relative w-24 h-3 bg-gray-300 rounded-full">
           <div
             className="absolute left-0 h-3 bg-yellow-500 rounded-full"
-            style={{ width: `${user?.experience}%` }}
+            style={{ width: `${calculateLevel(user?.experience)}%` }}
           ></div>
         </div>
         Level {user?.level}

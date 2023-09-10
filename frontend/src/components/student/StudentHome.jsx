@@ -75,7 +75,6 @@ const StudentHome = () => {
               <div>
                 <h2 className="text-white text-3xl font-semibold">
                   Continue Your Journey{" "}
-                  {console.log("recent course", recentCourse)}
                 </h2>
                 <p className="text-white text-lg mt-2">
                   Pick up right where you left off in{" "}

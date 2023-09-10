@@ -4,7 +4,6 @@ import "./Sidebar.scss";
 import {
   FaArchive,
   FaBox,
-  FaCalendar,
   FaCodepen,
   FaHome,
   FaSignOutAlt,
@@ -38,10 +37,10 @@ const sidebarNavItems = [
     section: "leaderboard",
   },
   {
-    display: "Quiz",
+    display: "Feed",
     icon: <FaBox />,
-    to: "/dashboard/quiz",
-    section: "quiz",
+    to: "/dashboard/feed",
+    section: "feed",
   },
   {
     display: "Achievements",
