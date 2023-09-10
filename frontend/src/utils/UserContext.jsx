@@ -37,6 +37,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const updateHistory = (newCourseHistory, courseName) => {
+    console.log(newCourseHistory, courseName);
     if (!history || history.length === 0) {
       // If history is empty, simply set it to an array containing the new course history
       setHistory([newCourseHistory]);

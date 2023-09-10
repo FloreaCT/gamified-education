@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./styles.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../../utils/UserContext";
-import { useSpring, animated, update } from "react-spring";
+import { useSpring, animated } from "react-spring";
 
 const CoursePage = () => {
   const [currentLevel, setCurrentLevel] = useState(1);
@@ -207,7 +207,6 @@ const CoursePage = () => {
         }
         const history = await response.json();
         history.current_level = history.current_level + 1;
-
         // Set user history in UserContext
         updateHistory(history);
       } catch (error) {

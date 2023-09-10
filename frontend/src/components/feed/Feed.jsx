@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useUser } from "../../utils/UserContext";
+import { animated, useSpring } from "react-spring";
 
 const Feed = () => {
   const [feedItems, setFeedItems] = useState([]);
   const [offset, setOffset] = useState(0);
   const [comments, setComments] = useState({});
   const [newComment, setNewComment] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const { user } = useUser();
   const limit = 10;
+
+  const messageStyles = useSpring({
+    opacity: errorMessage ? 1 : 0,
+    transform: errorMessage
+      ? "translate3d(0,0,0)"
+      : "translate3d(-40px,0,-40px)",
+  });
 
   useEffect(() => {
     const initialFetch = async () => {
@@ -72,18 +84,53 @@ const Feed = () => {
     }
   };
 
-  const likeFeedItem = async (feedItemId) => {
+  const likeFeedItem = async (feedItemId, userId) => {
     try {
-      await axios.post(`http://localhost:3001/api/feed/like/${feedItemId}`);
-      // Update the UI here to reflect the new like count
+      const like = await axios.post(
+        `http://localhost:3001/api/feed/like/${feedItemId}/${userId}/${user.id}`
+      );
+
+      const data = like.data;
+
+      if (data.error) {
+        setErrorMessage("You already liked this.");
+
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3000);
+
+        return;
+      } else {
+        const updatedFeedItems = feedItems.map((item) => {
+          if (item.id === feedItemId) {
+            return { ...item, likes: item.likes + 1 };
+          }
+          return item;
+        });
+
+        setFeedItems(updatedFeedItems);
+      }
     } catch (error) {
-      console.error("Error liking feed item:", error);
+      console.log("error");
     }
   };
 
-  const addComment = (feedItemId, comment) => {
-    console.log(`Adding comment to feed item ${feedItemId}: ${comment}`);
-    // Here you would send a request to your backend to actually add the comment
+  const addComment = async (feedItemId, comment) => {
+    try {
+      const encodedComment = encodeURIComponent(comment);
+      const like = await axios.post(
+        `http://localhost:3001/api/feed/comment/${feedItemId}/${encodedComment}/${user.id}`
+      );
+
+      if (like.status === 200) {
+        fetchComments(feedItemId);
+      } else {
+        setErrorMessage("Error adding comment.");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const toggleComments = (id) => {
@@ -102,6 +149,7 @@ const Feed = () => {
           key={item.id}
           className="feed-item bg-white rounded-lg shadow-lg p-4 mb-4"
         >
+          {console.log(item)}
           <div className="flex items-center mb-2">
             <img
               src={item.user.avatar}
@@ -119,10 +167,24 @@ const Feed = () => {
             <div className="comments-section border-t border-gray-300 mt-2 pt-2">
               {comments[item.id].map((comment) => (
                 <div key={comment.id} className="border rounded p-2 my-1">
-                  <span className="font-semibold">
-                    {comment.user.username}:
-                  </span>
-                  <span className="text-gray-700 ml-2">{comment.content}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <img
+                        src={comment.user.avatar}
+                        alt="avatar"
+                        className="w-8 h-8 rounded-full mr-2"
+                      />
+                      <span className="font-semibold">
+                        {comment.user.username} said:
+                      </span>
+                      <span className="text-gray-700 ml-2">
+                        {comment.content}
+                      </span>
+                    </div>
+                    <span className="text-gray-500 text-sm">
+                      {new Date(comment.timestamp.toString()).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               ))}
               <input
@@ -150,7 +212,8 @@ const Feed = () => {
             </button>
             <button
               className="text-green-500"
-              onClick={() => likeFeedItem(item.id)}
+              disabled={errorMessage}
+              onClick={() => likeFeedItem(item.id, item.userId)}
             >
               <i className="fa fa-thumbs-up mr-1 text-2xl" title="Like"></i>
               {item.likes}
@@ -158,6 +221,14 @@ const Feed = () => {
           </div>
         </div>
       ))}
+      {errorMessage && (
+        <animated.div
+          style={messageStyles}
+          className="bg-red-500 text-white inline-block px-2 py-1 rounded-lg"
+        >
+          {errorMessage}
+        </animated.div>
+      )}
     </div>
   );
 };

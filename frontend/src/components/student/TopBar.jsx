@@ -17,7 +17,6 @@ const TopBar = () => {
     const timer = setTimeout(() => {
       setShouldBlink(false);
     }, 5500);
-    console.log(user);
     return () => clearTimeout(timer);
   }, []);
 

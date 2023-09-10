@@ -27,7 +27,8 @@ const StudentHome = () => {
     } else if (user && user.fullName) {
       setCurrentUser(user.fullName);
     }
-    if (history) {
+
+    if (history && history.length > 0) {
       const sortedHistory = history.sort(
         (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
       );
@@ -121,7 +122,7 @@ const StudentHome = () => {
         )}
 
         {/* User History Section */}
-        {userHistory !== null ? (
+        {userHistory ? (
           <div className="bg-yellow-100 p-4 rounded-lg mb-4">
             <div className="text-2xl font-semibold">Your History</div>
             {/* Get from the UserCourseHistories where current user id = user_id and get */}
