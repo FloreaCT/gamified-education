@@ -12,13 +12,12 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Fragment, useContext, useEffect } from "react";
 import DashboardLayout from "./components/DashboardLayout";
 import Questionnaire from "./components/avatar/Questionnaire";
-import { UserProvider } from "./utils/UserContext";
+import { UserProvider, useUser } from "./utils/UserContext";
 import { EventContext } from "./utils/EventContext";
 import io from "socket.io-client";
 
 function App() {
   const { latestEvent, setLatestEvent } = useContext(EventContext);
-
   const messageStyles = useSpring({
     opacity: latestEvent ? 1 : 0,
     transform: latestEvent ? "translate3d(0,0,0)" : "translate3d(0,-40px,0)",
@@ -26,13 +25,11 @@ function App() {
 
   useEffect(() => {
     const socket = io("http://localhost:3002");
-
     socket.on("eventTriggered", (eventData) => {
       // Handle the event here
       if (eventData.type === "achievement") {
         setLatestEvent({ ...eventData });
       } else if (eventData.type === "badge") {
-        console.log("New badge earned:", eventData.detail);
         setLatestEvent({ type: "badge", detail: eventData.detail });
       }
     });
@@ -44,7 +41,7 @@ function App() {
 
   return (
     <div className="App">
-      <UserProvider>
+      <UserProvider latestEvent={latestEvent}>
         <Router>
           <Routes>
             <Route
@@ -66,7 +63,6 @@ function App() {
           </Routes>
         </Router>
       </UserProvider>
-      {console.log(latestEvent)}
       {latestEvent && latestEvent.type === "achievement" && (
         <div
           className="achievement-modal fixed inset-0 flex items-center justify-center z-9999999"

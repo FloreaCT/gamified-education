@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../utils/UserContext";
 
@@ -19,9 +19,13 @@ const StudentHome = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && typeof user.achievements === "string") {
+      setAchievements(JSON.parse(user.achievements));
+    } else if (user && user.achievements) {
       setAchievements(user.achievements);
+    } else {
     }
+
     if (user && user.username) {
       setCurrentUser(user.username);
     } else if (user && user.fullName) {
@@ -169,28 +173,32 @@ const StudentHome = () => {
                 Your Achievements 🏆
               </div>
               <div className="flex text-2xl font-semibold text-black">
-                Total: {user?.achievements.length}
+                Total: {user ? user.achievements.length : 0}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              {user?.achievements.map((achievement, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-2 bg-white p-2 rounded-lg shadow"
-                >
-                  <img
-                    src={achievement.icon}
-                    alt="Achievement Icon"
-                    className="w-8 h-8"
-                  />
-                  <div>
-                    <div className="font-semibold">{achievement.name}</div>
-                    <div className="text-xs text-gray-600">
-                      {achievement.description}
+              {user && achievements?.length !== 0 ? (
+                achievements.map((achievement, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-2 bg-white p-2 rounded-lg shadow"
+                  >
+                    <img
+                      src={achievement.icon}
+                      alt="Achievement Icon"
+                      className="w-8 h-8"
+                    />
+                    <div>
+                      <div className="font-semibold">{achievement.name}</div>
+                      <div className="text-xs text-gray-600">
+                        {achievement.description}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         ) : (

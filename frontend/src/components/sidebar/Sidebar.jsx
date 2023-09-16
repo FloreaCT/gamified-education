@@ -86,6 +86,15 @@ const Sidebar = () => {
   }, [location]);
 
   const signOut = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    fetch("http://localhost:3001/api/browserClose", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.id }),
+    });
     localStorage.removeItem("user");
     navigate("/student/signin");
   };

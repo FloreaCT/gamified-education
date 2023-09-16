@@ -30,6 +30,7 @@ const Leaderboard = () => {
   const handleMouseLeave = () => {
     setTooltipUser(null);
   };
+
   useEffect(() => {
     const filteredData = leaderboardData.filter((entry) =>
       entry.username.toLowerCase().includes(searchTerm.toLowerCase())
@@ -151,40 +152,46 @@ const Leaderboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentLeaderboardPage.map((user, index) => (
-                    <tr
-                      key={index}
-                      onMouseEnter={() => handleMouseEnter(user)}
-                      onMouseLeave={handleMouseLeave}
-                      className={`${
-                        user.username === currentUser.username
-                          ? "bg-teal-500"
-                          : ""
-                      } ${
-                        index === 0 && currentPage === 1
-                          ? "bg-teal-500 text-white hover:bg-teal-700 hover:text-white cursor-pointer"
-                          : index === 1 && currentPage === 1
-                          ? "bg-red-500 text-white hover:bg-red-600 hover:text-white cursor-pointer"
-                          : index === 2 && currentPage === 1
-                          ? "bg-yellow-500 text-white hover:bg-yellow-600 hover:text-white cursor-pointer"
-                          : "bg-white"
-                      } hover:bg-gray-200 cursor-pointer`}
-                    >
-                      <td>{user.rank}</td>
-                      <td>
-                        <img
-                          src={user.avatar}
-                          alt="Avatar"
-                          className="rounded-xl w-8 inline-block my-1"
-                        />
-                      </td>
-                      <td>{user.username}</td>
-                      <td>{user.level}</td>
-                      <td>{user.experience}</td>
-                      <td>{user.weeklyXP}</td>
-                      <td>{user.monthlyXP}</td>
-                    </tr>
-                  ))}
+                  {currentLeaderboardPage.map((user, index) => {
+                    let rowClass = "bg-white hover:bg-gray-200 cursor-pointer";
+
+                    if (index === 0) {
+                      rowClass =
+                        "bg-yellow-500 text-white hover:bg-yellow-700 hover:text-white cursor-pointer";
+                    } else if (index === 1) {
+                      rowClass =
+                        "bg-amber-800 text-white hover:bg-amber-600 hover:text-white cursor-pointer";
+                    } else if (index === 2) {
+                      rowClass =
+                        "bg-neutral-700 text-white hover:bg-neutral-600 hover:text-white cursor-pointer";
+                    } else if (user.username === currentUser.username) {
+                      rowClass =
+                        "bg-teal-500 text-white hover:bg-teal-700 hover:text-white cursor-pointer";
+                    }
+
+                    return (
+                      <tr
+                        key={index}
+                        onMouseEnter={() => handleMouseEnter(user)}
+                        onMouseLeave={handleMouseLeave}
+                        className={rowClass}
+                      >
+                        <td>{user.rank}</td>
+                        <td>
+                          <img
+                            src={user.avatar}
+                            alt="Avatar"
+                            className="rounded-xl w-8 inline-block my-1"
+                          />
+                        </td>
+                        <td>{user.username}</td>
+                        <td>{user.level}</td>
+                        <td>{user.experience}</td>
+                        <td>{user.weeklyXP}</td>
+                        <td>{user.monthlyXP}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

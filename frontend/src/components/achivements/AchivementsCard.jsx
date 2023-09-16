@@ -5,12 +5,18 @@ import { animated, useSpring } from "react-spring";
 const AchievementCard = ({ achievement }) => {
   const { user } = useUser();
   const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   const messageStyles = useSpring({
     opacity: errorMessage ? 1 : 0,
     transform: errorMessage
       ? "translate3d(0,0,0)"
       : "translate3d(-40px,0,-40px)",
+  });
+
+  const successStyles = useSpring({
+    opacity: message ? 1 : 0,
+    transform: message ? "translate3d(0,0,0)" : "translate3d(-40px,0,-40px)",
   });
 
   const handleShare = () => {
@@ -35,6 +41,12 @@ const AchievementCard = ({ achievement }) => {
         }, 3000);
 
         return;
+      } else {
+        setMessage("Achievement shared");
+
+        setTimeout(() => {
+          setMessage("");
+        }, 3000);
       }
 
       console.log("Achievement shared");
@@ -73,6 +85,14 @@ const AchievementCard = ({ achievement }) => {
           className="bg-red-500 text-white inline-block px-2 py-1 rounded-lg"
         >
           {errorMessage}
+        </animated.div>
+      )}
+      {message && (
+        <animated.div
+          style={successStyles}
+          className="bg-green-500 text-white inline-block px-2 py-1 rounded-lg"
+        >
+          {message}
         </animated.div>
       )}
     </div>

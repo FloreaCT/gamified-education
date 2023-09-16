@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../utils/UserContext";
 
@@ -17,8 +17,10 @@ const Login = () => {
   const [fullNameError, setFullNameError] = useState("");
   const [verifyPasswordError, setVerifyPasswordError] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const { user, updateUser } = useUser();
+  const { user } = useUser();
 
   // Check if the user is already logged in
   useEffect(() => {
@@ -34,6 +36,7 @@ const Login = () => {
   }, [navigate, user]);
 
   const toggleForm = () => {
+    setCredentialError("");
     setIsRegistering(!isRegistering);
   };
 
@@ -107,8 +110,11 @@ const Login = () => {
         const user = await response.json();
         localStorage.setItem("user", JSON.stringify(user));
 
-        if (user.avatar === null) {
-          navigate("/avatar-creation");
+        if (user.avatar === undefined || user.avatar === null) {
+          setLoading(true);
+          setTimeout(() => {
+            navigate("/avatar-creation");
+          }, 3000);
         } else {
           navigate("/dashboard/"); // Navigate to the dashboard
         }
@@ -244,14 +250,41 @@ const Login = () => {
             </div>
             <br />
             <div className="inputContainer">
-              <button
-                className="bg-teal-500 self-center hover:bg-teal-600 text-white font-bold py-2 px-4 rounded hover:cursor-pointer"
-                onClick={() => {
-                  registerUser();
-                }}
-              >
-                Register
-              </button>
+              {loading && (
+                <div className="flex flex-col items-center text-white">
+                  <svg
+                    className="animate-spin h-5 w-5 text-blue-500"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C1.8 0 0 1.8 0 4s1.8 4 4 4z"
+                    ></path>
+                  </svg>
+                  <p className="mt-2">
+                    Creating your super awesome user... 🎨🤪
+                  </p>
+                </div>
+              )}
+              {!loading && (
+                <button
+                  className="bg-teal-500 self-center hover:bg-teal-600 text-white font-bold py-2 px-4 rounded hover:cursor-pointer"
+                  onClick={() => {
+                    registerUser();
+                  }}
+                >
+                  Register
+                </button>
+              )}
             </div>
             <div className="inline-block text-white bg-black p-4 bg-opacity-40 rounded-3xl my-4">
               Already have an account?

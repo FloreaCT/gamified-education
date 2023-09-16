@@ -149,7 +149,6 @@ const Feed = () => {
           key={item.id}
           className="feed-item bg-white rounded-lg shadow-lg p-4 mb-4"
         >
-          {console.log(item)}
           <div className="flex items-center mb-2">
             <img
               src={item.user.avatar}

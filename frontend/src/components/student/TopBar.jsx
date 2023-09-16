@@ -9,7 +9,6 @@ const TopBar = () => {
   const [oldEmail, setOldEmail] = useState("");
 
   const { user, updateUser } = useUser(); // Destructure the user state variable
-  const experience = user ? user.experience : null;
   const avatar = user ? user.avatar : null;
 
   useEffect(() => {

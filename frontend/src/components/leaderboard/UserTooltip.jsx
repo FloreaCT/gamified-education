@@ -6,8 +6,9 @@ const UserTooltip = ({ user }) => {
       <h3 className="font-black">{user.username}</h3>
       <p className="font-medium">Recent Achievement:</p>
       <ul>
-        {user.achievements ? (
-          user.achievements.map((achievement, index) => (
+        {console.log(user)}
+        {JSON.parse(user.achievements) ? (
+          JSON.parse(user.achievements).map((achievement, index) => (
             <span
               key={index}
               className="text-sm bg-blue-500 text-white m-1 p-1 rounded-full flex items-center space-x-1"

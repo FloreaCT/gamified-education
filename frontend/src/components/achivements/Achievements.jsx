@@ -4,7 +4,7 @@ import { useUser } from "../../utils/UserContext";
 
 const Achievements = () => {
   const [achievements, setAchievements] = useState([]);
-  const { user } = useUser();
+  const { user, updateUser } = useUser();
 
   useEffect(() => {
     const updateFinish = async () => {
@@ -20,13 +20,18 @@ const Achievements = () => {
       });
 
       if (!response.ok) {
-        console.log("Something went wrong");
         return;
       }
 
-      const achievements = await response.json();
+      let achievements = await response.json();
 
-      setAchievements(achievements);
+      if (achievements.length === undefined) {
+        return;
+      } else if (typeof achievements === "string") {
+        setAchievements(JSON.parse(achievements));
+      } else {
+        setAchievements(achievements);
+      }
     };
 
     updateFinish();
