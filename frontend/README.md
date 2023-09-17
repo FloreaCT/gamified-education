@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# Gamification Education App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Table of Contents
 
-## Available Scripts
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Database Setup](#database-setup)
+- [Backend Setup](#backend-setup)
+- [Frontend Setup](#frontend-setup)
+- [Contributing](#contributing)
+- [License](#license)
 
-In the project directory, you can run:
+## Overview
 
-### `npm start`
+The Gamification Education App aims to enhance the learning experience by integrating game-like elements into the educational process. It provides a platform for students and educators to engage in a more interactive and motivating learning environment.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- User Authentication
+- Real-time Notifications
+- Achievement Tracking
+- Leaderboard
+- Achivements Commenting Functionality
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend
 
-### `npm run build`
+- Node.js
+- Express
+- MySQL
+- Sequelize
+- Socket.io
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- React
+- TailwindCSS
+- Axios
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Project Management
 
-### `npm run eject`
+- Asana
+- GitHub
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To get the project up and running, follow these steps:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Database Setup
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Install MySQL and create a new database.
+2. Update the `.env` file with your database credentials.
 
-## Learn More
+### Backend Setup
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Navigate to the `backend` directory.
+2. Run `npm install` to install dependencies.
+3. Run `npm start` to start the server.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Frontend Setup
 
-### Code Splitting
+1. Navigate to the `frontend` directory.
+2. Run `npm install` to install dependencies.
+3. Run `npm start` to start the development server.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Contributing
 
-### Analyzing the Bundle Size
+If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcome.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## License
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Distributed under the MIT License. See `LICENSE` for more information.
