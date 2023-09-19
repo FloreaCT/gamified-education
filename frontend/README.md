@@ -32,7 +32,7 @@ The Gamification Education App aims to enhance the learning experience by integr
 ## Technologies Used
 
 ### Backend
-
+s
 - Node.js
 - Express
 - MySQL
