@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../../utils/UserContext"; // Import the UserContext
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3002");
 
 const TopBar = () => {
   const [shouldBlink, setShouldBlink] = useState(false);
@@ -7,6 +10,7 @@ const TopBar = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [oldEmail, setOldEmail] = useState("");
+  const [achievements, setAchievements] = useState([]);
 
   const { user, updateUser } = useUser(); // Destructure the user state variable
   const avatar = user ? user.avatar : null;
@@ -29,6 +33,32 @@ const TopBar = () => {
     setSuccessMessage("");
     setIsModalOpen(!isModalOpen);
   };
+
+  useEffect(() => {
+    // Fetch initial achievements from API
+    const fetchAchievements = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/feed/achievements"
+        );
+        const achievements = await response.json();
+        setAchievements(achievements);
+        console.log(achievements);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAchievements();
+    // Listen for updates
+    socket.on("feedAchievement", (newAchievement) => {
+      fetchAchievements();
+    });
+
+    return () => {
+      socket.off("feedAchievement");
+    };
+  }, []);
 
   const handleOutsideClick = (e) => {
     if (e.target.classList.contains("outside")) {
@@ -106,12 +136,13 @@ const TopBar = () => {
           shouldBlink ? "animate-pulse" : ""
         }`}
       >
-        <div className="flex items-center">
-          🏆 <span className="ml-1">Jane just reached level 10!</span>
-        </div>
-        <div className="flex items-center">
-          🌟 <span className="ml-1">Mike completed a daily quest!</span>
-        </div>
+        {achievements?.map((achievement, index) => (
+          <div key={index} className="flex items-center">
+            🏆 <span className="ml-1">{achievement.username} just got </span>
+            <span className="ml-1 italic">{achievement.achievementName}</span>
+            &nbsp;achievement.
+          </div>
+        ))}
       </div>
 
       {/* Right Side: Avatar and Profile Text */}

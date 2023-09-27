@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Admin87*",
+    "database": "gamified_education",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "Aitrust87",
+    "database": "gamified_education",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Aitrust87",
+    "database": "gamified_education",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
