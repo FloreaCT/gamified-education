@@ -1,6 +1,8 @@
 # Gamification Education App
 
-## Table of Contents
+ Link to the project: https://gamified-portfolio-alpha.vercel.app/
+
+### Table of Contents
 
 - [Gamification Education App](#gamification-education-app)
   - [Table of Contents](#table-of-contents)
